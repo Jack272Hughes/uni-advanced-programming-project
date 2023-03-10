@@ -3,8 +3,8 @@
 
 class GameComponent {
 private:
+    static int instances;
     int id;
-    int instances;
 public:
     GameComponent();
     virtual void Update(const tm* eventTime);

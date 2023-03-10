@@ -10,8 +10,8 @@ private:
     void ChangeDirection();
     void Draw();
 public:
-    const int SCREEN_HEIGHT = 10;
-    const int SCREEN_WIDTH = 10;
+    const int SCREEN_HEIGHT = 20;
+    const int SCREEN_WIDTH = 80;
     Direction direction;
     DrawableGameComponent(int x, int y);
     void Update(const tm* eventTime);
