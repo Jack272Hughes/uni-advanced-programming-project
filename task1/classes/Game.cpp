@@ -10,7 +10,7 @@ Game::~Game() {
     for (int index = 0; index < componentCount; index++) {
         delete components[index];
     }
-    delete components;
+    delete[] components;
 }
 
 void Game::Add(GameComponent* component) {
