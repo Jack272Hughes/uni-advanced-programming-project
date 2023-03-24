@@ -22,7 +22,7 @@ void Game::Add(GameComponent* component) {
 
 void Game::Run() {
     // It should attempt to call the initialise function only if it exists
-    // AKA if the user has called "SetInitialise" since it is not assigned a value in the constructor
+    // AKA if the user has called "SetInitialise", since it is not assigned a value in the constructor
     if (initialise) initialise();
 
     for (int invocations = 1; invocations <= 5; invocations++) {
@@ -37,7 +37,6 @@ void Game::Run() {
         sleep(TICKS_1000MS);
     }
 
-    // It should attempt to call the terminate function only if it exists
     if (terminate) terminate();
 }
 

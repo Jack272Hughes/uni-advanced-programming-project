@@ -13,9 +13,8 @@ GameComponent::GameComponent() {
 
 void GameComponent::Update(const tm* eventTime) {
     char formattedTime[9];
-    // strftime will use a string pattern to create a formatted string of the time defined by a
-    // "tm" object (eventTime), which is then assigned to the char array argument (formattedTime)
-    // The format identifier "%X" will format the 24 hour time in the formation of HH:MM:SS
+    // The format identifier "%X" will format the 24 hour time in the form of HH:MM:SS
+    // As "formattedTime" is sent by reference, strftime will mutate it to include the formatted time string
     strftime(formattedTime, sizeof(formattedTime), "%X", eventTime);
     printf("ID: %d updated at %s\n", this->id, formattedTime);
 }

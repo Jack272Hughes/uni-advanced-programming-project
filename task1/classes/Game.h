@@ -1,7 +1,7 @@
 #pragma once
 #include "GameComponent.h"
 
-// A type definition defining a function that
+// A type definition (FP) for a function that
 // takes no parameters and returns void
 typedef void (*FP)();
 

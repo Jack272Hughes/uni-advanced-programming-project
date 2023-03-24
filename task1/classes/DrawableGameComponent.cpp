@@ -21,13 +21,11 @@ void DrawableGameComponent::ChangeDirection() {
 }
 
 void DrawableGameComponent::Draw() {
-    // printf allows you to use a string pattern to output to the screen
-    // replacing any specifiers (%) with the extra arguments
     printf("Direction: %u, X: %d, Y: %d\n", direction, x, y);
 }
 
-
-
+// The eventTime uses "const" to indicate to the user that
+// this member function will not mutate the variable
 void DrawableGameComponent::Update(const tm* eventTime) {
     GameComponent::Update(eventTime);
     // A switch statement is used because "direction" can be one of four values and is more
@@ -35,13 +33,11 @@ void DrawableGameComponent::Update(const tm* eventTime) {
     // and will instead go directly to the matching case
     switch(direction) {
         case Left:
-            // The max method will return the bigger of the two numbers
-            // stopping the value of x/y from subceeding zero
+            // The max method is used to stop the value of x/y from subceeding zero
             x = max(0, x - 1);
             break;
         case Right:
-            // The min method will return the smaller of the two numbers
-            // stopping the value of x/y from exceeding the screen's dimensions
+            // The min method is used to stop the value of x/y from exceeding the screen's dimensions
             x = min(SCREEN_WIDTH, x + 1);
             break;
         case Up:
