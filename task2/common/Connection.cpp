@@ -26,6 +26,9 @@ void Connection::sendMessage(const std::string message) {
     }
 }
 
+// For some methods you would instead have the user pass a char buffer by reference as an argument
+// along with the size, but I've taken an alternative approach of instead returning a C++ string
+// type so that the user does not need to worry about the length of the incoming message
 std::string Connection::receiveMessage() {
     std::vector<char> buffer(Connection::MAX_BUFFER_SIZE);
     std::string message;
