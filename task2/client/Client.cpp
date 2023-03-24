@@ -17,7 +17,6 @@ Client::~Client() {
 }
 
 void Client::send(std::string message) {
-    connection->hasPendingMessage();
     connection->sendMessage(message);
 }
 

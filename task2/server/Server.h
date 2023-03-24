@@ -5,9 +5,9 @@
 
 class Server : public Comms {
 private:
+    const static int MAX_CONNECTION_BACKLOG;
     ConnectionReceiver* connectionReceiver;
     MessageFunction onMessage;
-    int maxConnections;
 public:
     Server(const char* address, int port, int maxConnections);
     ~Server();

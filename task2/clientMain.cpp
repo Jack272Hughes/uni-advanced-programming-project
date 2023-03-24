@@ -19,7 +19,7 @@ int main() {
 
     try {
 #if IS_SERVER == true
-        int maxConnections = 1;
+        int maxConnections = 2;
         Server* server = new Server(serverAddress, port, maxConnections);
         server->setOnMessage(messageReply);
         server->start();

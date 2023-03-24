@@ -10,8 +10,9 @@ void printMessage(Connection* connection, std::string message) {
     std::cout << "Message received: " << message << std::endl;
 }
 
-ConnectionReceiver::ConnectionReceiver() {
+ConnectionReceiver::ConnectionReceiver(int maxConnections) {
     this->connections = std::set<Connection*>();
+    this->maxConnections = maxConnections;
     this->onMessage = printMessage;
 }
 
@@ -21,7 +22,12 @@ ConnectionReceiver::~ConnectionReceiver() {
     }
 }
 
-void ConnectionReceiver::add(Connection* connection) {    
+void ConnectionReceiver::add(Connection* connection) {
+    if (connections.size() >= maxConnections) {
+        std::cout << "Maximum number of connections reached, closing this connection" << std::endl;
+        delete connection;
+    }
+
     connections.insert(connection);
 }
 
