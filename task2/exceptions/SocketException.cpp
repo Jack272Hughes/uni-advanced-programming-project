@@ -1,6 +1,8 @@
 #include <iostream>
 #include "SocketException.h"
 
+// Overloading the constructor to allow the user to only
+// pass a reason since an error number may not be available
 SocketException::SocketException(std::string reason) {
     this->reason = reason;
 }

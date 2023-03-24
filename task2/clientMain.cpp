@@ -30,6 +30,7 @@ int main() {
             std::string message;
             std::getline(std::cin, message);
             client->send(message);
+
             std::string response = client->receive();
             std::cout << "Response received: " << response << std::endl;
         }

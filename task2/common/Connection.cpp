@@ -13,6 +13,8 @@ Connection::Connection(int socket) {
     this->socket = socket;
 }
 
+// The destructor makes sure to close the socket otherwise the program
+// will fail if there are too many file descriptors associated with it
 Connection::~Connection() {
     close(this->socket);
 }
@@ -39,6 +41,13 @@ std::string Connection::receiveMessage() {
             default:
                 message.append(buffer.cbegin(), buffer.cend());
         }
+        // Once a message is received there is no way to determine how much data is sent.
+        // To counter this it checks to see if it filled up its buffer on the last read
+        // and if it has there is a possibility there is still something else to read.
+
+        // It checks if there is a pending message before doing another read, since
+        // the message length could coincidentally just equal the max buffer size and it will
+        // get stuck waiting for more data when there is nothing else to read.
     } while (byteCount == Connection::MAX_BUFFER_SIZE && hasPendingMessage());
 
     return message;
@@ -47,6 +56,8 @@ std::string Connection::receiveMessage() {
 bool Connection::hasPendingMessage() {
     fd_set fdsToRead;
     FD_SET(this->socket, &fdsToRead);
+    // This will check all the sockets defined in "fdsToRead" and return the total
+    // count of sockets with pending requests. In this case that is a maximum of 1
     int totalFds = select(this->socket + 1, &fdsToRead, NULL, NULL, &Connection::SELECT_TIMEOUT);
 
     if (totalFds == Comms::SOCKET_ERROR) throw SocketException("Error occured trying to check pending message status", errno);

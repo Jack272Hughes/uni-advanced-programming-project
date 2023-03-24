@@ -33,6 +33,8 @@ void Server::start() {
     std::cout << "Server started!" << std::endl;
 
     while (true) {
+        // Since the connection receiver runs on a separate thread, we can call the accept
+        // method (which blocks) without affecting the reading of incoming messages
         int incomingConnection = accept(this->socketFD, NULL, NULL);
         std::cout << "Connection received!" << std::endl;
         this->connectionReceiver->add(new Connection(incomingConnection));

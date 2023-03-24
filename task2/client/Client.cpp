@@ -12,6 +12,7 @@ Client::Client(const char* address, int port): Comms(address, port) {
     connection = new Connection(this->socketFD);
 }
 
+// Destructor for cleaning up the connection created by the constructor
 Client::~Client() {
     delete this->connection;
 }
