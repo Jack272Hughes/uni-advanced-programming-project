@@ -4,24 +4,22 @@
 #include "common/Comms.h"
 #include "exceptions/SocketException.h"
 
-void printMessage(char* message) {
-    std::cout << "Message received: " << message << std::endl;
-}
-
-Server::Server(const char* address, int port): Comms(address, port) {
+Server::Server(const char* address, int port, int maxConnections): Comms(address, port) {
     int responseCode = bind(this->socketFD, (sockaddr*) &this->address, sizeof(this->address));
     if (responseCode == SOCKET_ERROR) {
         throw SocketException("Error occurred while trying to bind socket to port", errno);
     }
-    this->onMessage = printMessage;
+    this->maxConnections = maxConnections;
+    this->connectionReceiver = new ConnectionReceiver(maxConnections);
 }
 
 Server::~Server() {
+    delete this->connectionReceiver;
     close(this->socketFD);
 }
 
 void Server::setOnMessage(MessageFunction onMessageFunction) {
-    this->onMessage = onMessageFunction;
+    this->connectionReceiver->setOnMessage(onMessageFunction);
 }
 
 pthread_mutex_t receivedMessageMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -44,17 +42,18 @@ void* handleConnection(void* incoming) {
     return 0;
 }
 
-void Server::start(int maxConnections) {
+void Server::start() {
     int responseCode = listen(this->socketFD, maxConnections);
     if (responseCode == SOCKET_ERROR) {
         throw SocketException("Error occurred while trying to listen on bound socket", errno);
     }
 
+    this->connectionReceiver->start();
     std::cout << "Server started!" << std::endl;
+
     while (true) {
         int incomingConnection = accept(this->socketFD, NULL, NULL);
         std::cout << "Connection received!" << std::endl;
-        pthread_t connectionThread;
-        pthread_create(&connectionThread, NULL, handleConnection, new Connection(incomingConnection));
+        this->connectionReceiver->add(new Connection(incomingConnection));
     }
 }

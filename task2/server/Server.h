@@ -1,15 +1,16 @@
 #pragma once
 #include "common/Comms.h"
 #include "common/Connection.h"
-
-typedef void (*MessageFunction)(char* message);
+#include "ConnectionReceiver.h"
 
 class Server : public Comms {
 private:
+    ConnectionReceiver* connectionReceiver;
     MessageFunction onMessage;
+    int maxConnections;
 public:
-    Server(const char* address, int port);
+    Server(const char* address, int port, int maxConnections);
     ~Server();
     void setOnMessage(MessageFunction onMessageFunction);
-    void start(int maxConnections);
+    void start();
 };

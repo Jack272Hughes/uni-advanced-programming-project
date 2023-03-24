@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <mutex>
 
 class Connection {
 private:
@@ -9,7 +10,7 @@ private:
 public:
     Connection(int socket);
     ~Connection();
-    bool hasPendingMessage();
     void sendMessage(const std::string message);
     std::string receiveMessage();
+    bool hasPendingMessage();
 };

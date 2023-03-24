@@ -1,10 +1,17 @@
-#define IS_SERVER false
+#define IS_SERVER true
 
 #include <iostream>
 #include <string>
 #include "server/Server.h"
 #include "client/Client.h"
 #include "exceptions/SocketException.h"
+
+void messageReply(Connection* connection, std::string message) {
+        std::cout << "Message received: " << message << "\nHow would you like to respond?" << std::endl;
+        std::string response;
+        std::getline(std::cin, response);
+        connection->sendMessage(response);
+}
 
 int main() {
     char const *serverAddress = "127.0.0.1";
@@ -13,9 +20,9 @@ int main() {
     try {
 #if IS_SERVER == true
         int maxConnections = 1;
-
-        Server* server = new Server(serverAddress, port);
-        server->start(maxConnections);
+        Server* server = new Server(serverAddress, port, maxConnections);
+        server->setOnMessage(messageReply);
+        server->start();
 #else
         Client* client = new Client(serverAddress, port);
         while (true) {

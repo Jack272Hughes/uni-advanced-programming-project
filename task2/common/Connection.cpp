@@ -24,16 +24,6 @@ void Connection::sendMessage(const std::string message) {
     }
 }
 
-bool Connection::hasPendingMessage() {
-    fd_set fdsToRead;
-    FD_SET(this->socket, &fdsToRead);
-    int totalFds = select(this->socket + 1, &fdsToRead, NULL, NULL, &Connection::SELECT_TIMEOUT);
-
-    if (totalFds == Comms::SOCKET_ERROR) throw new SocketException("Error occured trying to check pending message status", errno);
-
-    return totalFds > 0;
-}
-
 std::string Connection::receiveMessage() {
     std::vector<char> buffer(Connection::MAX_BUFFER_SIZE);
     std::string message;
@@ -52,4 +42,14 @@ std::string Connection::receiveMessage() {
     } while (byteCount == Connection::MAX_BUFFER_SIZE && hasPendingMessage());
 
     return message;
+}
+
+bool Connection::hasPendingMessage() {
+    fd_set fdsToRead;
+    FD_SET(this->socket, &fdsToRead);
+    int totalFds = select(this->socket + 1, &fdsToRead, NULL, NULL, &Connection::SELECT_TIMEOUT);
+
+    if (totalFds == Comms::SOCKET_ERROR) throw SocketException("Error occured trying to check pending message status", errno);
+
+    return totalFds > 0;
 }
