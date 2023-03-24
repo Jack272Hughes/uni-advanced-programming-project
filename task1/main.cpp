@@ -14,6 +14,8 @@ void terminate() {
 }
 
 int main() {
+    // This only needs to be called once at the beginning of the program
+    // and seeds the random function (rand) using the current time
     srand(time(0));
 
     Game* game = new Game(2);

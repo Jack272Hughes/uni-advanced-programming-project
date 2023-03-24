@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <iostream>
-#include <numeric>
 #include "DrawableGameComponent.h"
 
 using namespace std;
@@ -13,13 +12,17 @@ DrawableGameComponent::DrawableGameComponent(int x, int y): GameComponent() {
 
 void DrawableGameComponent::ChangeDirection() {
     Direction newDirection;
+    // The do..while loop will ensure a new direction is chosen randomly at least
+    // once and will rechoose if the chosen direction matches the previous one
     do {
         newDirection = Direction(rand() % 4);
-    } while (newDirection != direction);
+    } while (newDirection == direction);
     direction = newDirection;
 }
 
 void DrawableGameComponent::Draw() {
+    // printf allows you to use a string pattern to output to the screen
+    // replacing any specifiers (%) with the extra arguments
     printf("Direction: %u, X: %d, Y: %d\n", direction, x, y);
 }
 
@@ -27,11 +30,18 @@ void DrawableGameComponent::Draw() {
 
 void DrawableGameComponent::Update(const tm* eventTime) {
     GameComponent::Update(eventTime);
+    // A switch statement is used because "direction" can be one of four values and is more
+    // effective than an if statement, since it doesn't need to check each direction one by one
+    // and will instead go directly to the matching case
     switch(direction) {
         case Left:
+            // The max method will return the bigger of the two numbers
+            // stopping the value of x/y from subceeding zero
             x = max(0, x - 1);
             break;
         case Right:
+            // The min method will return the smaller of the two numbers
+            // stopping the value of x/y from exceeding the screen's dimensions
             x = min(SCREEN_WIDTH, x + 1);
             break;
         case Up:
