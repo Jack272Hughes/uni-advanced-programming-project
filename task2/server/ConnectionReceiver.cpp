@@ -10,49 +10,43 @@ void printMessage(Connection* connection, std::string message) {
     std::cout << "Message received: " << message << std::endl;
 }
 
-ConnectionReceiver::ConnectionReceiver(int maxConnections) {
-    this->connections = new Connection*[maxConnections];
-    this->totalConnections = 0;
+ConnectionReceiver::ConnectionReceiver() {
+    this->connections = std::set<Connection*>();
     this->onMessage = printMessage;
 }
 
 ConnectionReceiver::~ConnectionReceiver() {
-    for (int index = 0; index < totalConnections; index++) {
-        delete connections[index];
-    }
-    delete[] connections;
-}
-
-void ConnectionReceiver::add(Connection* connection) {
-    if (totalConnections >= sizeof(connections)) {
-        std::cout << "Maximum number of connections reached, closing this connection" << std::endl;
+    for (Connection* connection : connections) {
         delete connection;
     }
-    
-    connections[totalConnections] = connection;
-    totalConnections++;
+}
+
+void ConnectionReceiver::add(Connection* connection) {    
+    connections.insert(connection);
 }
 
 std::mutex handlingMessageMutex;
 void handleConnection(Connection* connection, MessageFunction onMessage) {
     handlingMessageMutex.lock();
-
-    try {
-        std::string message = connection->receiveMessage();
-        onMessage(connection, message);
-    } catch(SocketException exception) {
-        std::cout << "Received error when handling connection:\n" << exception.what() << std::endl;
-    }
-
+    std::string message = connection->receiveMessage();
+    onMessage(connection, message);
     handlingMessageMutex.unlock();
 }
 
 void ConnectionReceiver::handleConnections() {
     while (true) {
-        for (int index = 0; index < totalConnections; index++) {
-            Connection* connection = this->connections[index];
+
+        for (Connection* connection : connections) {
             if (!connection->hasPendingMessage()) continue;
-            handleConnection(connection, onMessage);
+
+            try {
+                handleConnection(connection, onMessage);
+            } catch(SocketException exception) {
+                std::cout << "Received error when handling connection:\n\t" << exception.what() << std::endl;
+                connections.erase(connection);
+                delete connection;
+                break;
+            }
         }
     }
 }

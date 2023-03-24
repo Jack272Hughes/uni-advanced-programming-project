@@ -10,7 +10,7 @@ Server::Server(const char* address, int port, int maxConnections): Comms(address
         throw SocketException("Error occurred while trying to bind socket to port", errno);
     }
     this->maxConnections = maxConnections;
-    this->connectionReceiver = new ConnectionReceiver(maxConnections);
+    this->connectionReceiver = new ConnectionReceiver();
 }
 
 Server::~Server() {

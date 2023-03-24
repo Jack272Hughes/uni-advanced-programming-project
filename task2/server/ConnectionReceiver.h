@@ -1,18 +1,18 @@
 #pragma once
 #include <thread>
+#include <set>
 #include "common/Connection.h"
 
 typedef void (*MessageFunction)(Connection* connection, std::string message);
 
 class ConnectionReceiver {
 private:
-    Connection** connections;
-    int totalConnections;
+    std::set<Connection*> connections;
     MessageFunction onMessage;
     std::thread handlerThread;
     void handleConnections();
 public:
-    ConnectionReceiver(int maxConnections);
+    ConnectionReceiver();
     ~ConnectionReceiver();
     void add(Connection* connection);
     void start();
