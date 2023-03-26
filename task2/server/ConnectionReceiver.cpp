@@ -1,7 +1,6 @@
 #include <iostream>
 #include <unistd.h>
 #include <thread>
-#include <mutex>
 #include <algorithm>
 #include "ConnectionReceiver.h"
 #include "exceptions/SocketException.h"
@@ -36,34 +35,32 @@ void ConnectionReceiver::add(Connection* connection) {
     connections.insert(connection);
 }
 
-std::mutex handlingMessageMutex;
-void handleConnection(Connection* connection, MessageFunction onMessage) {
-    // A lock is added so that if we instantiate more than one
-    // connection receiver then they will not clash with each other
-    handlingMessageMutex.lock();
-    std::string message = connection->receiveMessage();
-    onMessage(connection, message);
-    handlingMessageMutex.unlock();
-}
-
 void ConnectionReceiver::handleConnections() {
     while (true) {
-
         for (Connection* connection : connections) {
             if (!connection->hasPendingMessage()) continue;
 
             try {
-                handleConnection(connection, onMessage);
+                // A lock is added so that if we instantiate more than one
+                // connection receiver then they will not clash with each other
+                handlingMessageMutex.lock();
+
+                std::string message = connection->receiveMessage();
+                onMessage(connection, message);
             } catch(SocketException exception) {
                 // Should an exception be thrown we should remove this connection as it is probably faulty
                 // It will need to be removed from the connections set and deleted
                 std::cout << "Received error when handling connection:\n\t" << exception.what() << std::endl;
                 connections.erase(connection);
                 delete connection;
+                // Unlock the mutex since we are about to break out of the for loop
+                handlingMessageMutex.unlock();
                 // We break out of the current for loop since we have just
                 // removed an element from the set we're iterating over
                 break;
             }
+
+            handlingMessageMutex.unlock();
         }
     }
 }
