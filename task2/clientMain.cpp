@@ -49,5 +49,6 @@ int main() {
 #endif
     } catch (SocketException exception) {
         std::cout << exception.what() << std::endl;
+        return 1;
     }
 }
