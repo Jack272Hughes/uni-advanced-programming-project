@@ -11,6 +11,6 @@ public:
     // Static constants for when a socket function returns a response code
     // so that there are no unexplained, "floating" -1's or 0's everywhere
     const static int SOCKET_ERROR = -1;
-    const static int SOCKER_CLOSED = 0;
+    const static int SOCKET_CLOSED = 0;
     Comms(const char* address, int port);
 };

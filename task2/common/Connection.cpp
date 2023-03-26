@@ -39,7 +39,7 @@ std::string Connection::receiveMessage() {
         switch(byteCount) {
             case Comms::SOCKET_ERROR:
                 throw SocketException("Error occurred while trying to receive message", errno);
-            case Comms::SOCKER_CLOSED:
+            case Comms::SOCKET_CLOSED:
                 throw SocketException("The connection was closed by the client");
             default:
                 message.append(buffer.cbegin(), buffer.cend());
