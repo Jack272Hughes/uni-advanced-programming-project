@@ -4,6 +4,8 @@
 
 using namespace std;
 
+const char* DrawableGameComponent::directionString[] = { "Left", "Right", "Up", "Down" };
+
 DrawableGameComponent::DrawableGameComponent(int x, int y): GameComponent() {
     this->x = x;
     this->y = y;
@@ -21,7 +23,7 @@ void DrawableGameComponent::ChangeDirection() {
 }
 
 void DrawableGameComponent::Draw() {
-    printf("Direction: %u, X: %d, Y: %d\n", direction, x, y);
+    printf("Direction: %s, X: %d, Y: %d\n", directionString[direction], x, y);
 }
 
 // The eventTime uses "const" to indicate to the user that

@@ -7,6 +7,7 @@ private:
     // Using an enum for the direction will stop the user from being
     // able to use potentially nonsense strings for the "direction" variable
     enum Direction { Left, Right, Up, Down };
+    static const char* directionString[];
     int x;
     int y;
     void ChangeDirection();
